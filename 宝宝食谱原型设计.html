@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宝宝食谱微信小程序原型</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f6f7f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #ff7b54;
+        }
+
+        h2 {
+            margin: 20px 0;
+            padding-left: 10px;
+            border-left: 4px solid #ff7b54;
+            color: #444;
+        }
+
+        .prototype-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        /* 手机框架 */
+        .phone-frame {
+            width: 320px;
+            height: 650px;
+            background-color: white;
+            border-radius: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            border: 10px solid #333;
+        }
+
+        .phone-header {
+            height: 50px;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .phone-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .phone-content {
+            height: calc(100% - 100px);
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .phone-tabbar {
+            height: 50px;
+            background-color: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid #eee;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .tab-item.active {
+            color: #ff7b54;
+        }
+
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        /* 组件样式 */
+        .search-bar {
+            background-color: #f5f5f5;
+            border-radius: 20px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .search-icon {
+            color: #999;
+            margin-right: 8px;
+        }
+
+        .banner {
+            height: 150px;
+            background-color: #ffe3d8;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff7b54;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        .banner-text {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .more-link {
+            font-size: 12px;
+            color: #999;
+            font-weight: normal;
+        }
+
+        .card-list {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+        }
+
+        .card {
+            width: 120px;
+            flex-shrink: 0;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .card-image {
+            height: 90px;
+            background-color: #ffd6c9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff7b54;
+        }
+
+        .card-content {
+            padding: 8px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .card-info {
+            font-size: 11px;
+            color: #999;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-right: 4px;
+            background-color: #ffe3d8;
+            color: #ff7b54;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #ffe3d8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            color: #ff7b54;
+        }
+
+        .category-name {
+            font-size: 12px;
+        }
+
+        .recipe-detail {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .recipe-header {
+            margin-bottom: 15px;
+        }
+
+        .recipe-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .recipe-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .recipe-image {
+            height: 180px;
+            background-color: #ffd6c9;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff7b54;
+        }
+
+        .recipe-section {
+            margin-bottom: 15px;
+        }
+
+        .recipe-section-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .recipe-section-title::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background-color: #ff7b54;
+            margin-right: 6px;
+            border-radius: 2px;
+        }
+
+        .ingredient-list,
+        .step-list {
+            padding-left: 20px;
+        }
+
+        .ingredient-item,
+        .step-item {
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .allergen-warning {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .nutrition-item {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .nutrition-value {
+            font-weight: bold;
+            font-size: 15px;
+            color: #ff7b54;
+        }
+
+        .nutrition-name {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .action-bar {
+            display: flex;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .action-button {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            gap: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: white;
+        }
+
+        .chip-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .chip {
+            background-color: #f0f0f0;
+            border-radius: 16px;
+            padding: 6px 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chip.selected {
+            background-color: #ffe3d8;
+            color: #ff7b54;
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff7b54;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .profile-header {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #ffd6c9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff7b54;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .profile-meta {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .menu-list {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-icon {
+            margin-right: 10px;
+            color: #ff7b54;
+        }
+
+        .menu-title {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .menu-arrow {
+            color: #ccc;
+        }
+
+        .badge {
+            background-color: #ff4d4f;
+            color: white;
+            border-radius: 10px;
+            padding: 0 6px;
+            font-size: 10px;
+            margin-left: 6px;
+        }
+
+        .meal-plan {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .day-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ff7b54;
+            margin-bottom: 10px;
+        }
+
+        .meal-item {
+            display: flex;
+            margin-bottom: 12px;
+            align-items: flex-start;
+        }
+
+        .meal-time {
+            width: 60px;
+            font-size: 13px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .meal-content {
+            flex: 1;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 13px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .calendar-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 15px;
+            color: #666;
+        }
+
+        .day-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .day-cell {
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .day-name {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .day-number {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            border-radius: 50%;
+        }
+
+        .day-number.today {
+            background-color: #ff7b54;
+            color: white;
+        }
+
+        .day-number.has-meal {
+            background-color: #ffe3d8;
+            color: #ff7b54;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>宝宝食谱微信小程序原型</h1>
+
+        <h2>首页 - 个性化推荐</h2>
+        <div class="prototype-container">
+            <div class="phone-frame">
+                <div class="phone-header">
+                    <div class="phone-title">宝宝食谱</div>
+                </div>
+                <div class="phone-content">
+                    <div class="search-bar">
+                        <span class="search-icon">🔍</span>
+                        <span style="color: #999; font-size: 14px;">搜索食谱、食材</span>
+                    </div>
+
+                    <div class="banner">
+                        <div class="banner-image" style="background-color: #ffd6c9;"></div>
+                        <div class="banner-text">
+                            <div style="font-size: 18px; margin-bottom: 5px;">为宝宝定制的健康食谱</div>
+                            <div style="font-size: 12px;">营养均衡 · 安全可靠 · 过敏原标识</div>
+                        </div>
+                    </div>
+
+                    <div class="category-grid">
+                        <div class="category-item">
+                            <div class="category-icon">🍼</div>
+                            <div class="category-name">4-6个月</div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-icon">🥣</div>
+                            <div class="category-name">6-8个月</div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-icon">🍲</div>
+                            <div class="category-name">8-12个月</div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-icon">🍱</div>
+                            <div class="category-name">1岁以上</div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-icon">🍞</div>
+                            <div class="category-name">主食</div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-icon">🥦</div>
+                            <div class="category-name">辅食</div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-icon">🍎</div>
+                            <div class="category-name">水果</div>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-icon">🥛</div>
+                            <div class="category-name">饮品</div>
+                        </div>
+                    </div>
+
+                    <div class="section-title">
+                        适合小皮皮的推荐 <span class="more-link">查看更多 ></span>
+                    </div>
+                    <div class="card-list">
+                        <div class="card">
+                            <div class="card-image">蔬菜豆腐泥</div>
+                            <div class="card-content">
+                                <div class="card-title">蔬菜豆腐泥</div>
+                                <div class="card-info">
+                                    <span>8个月+</span>
+                                    <span>❤️ 238</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-image">南瓜粥</div>
+                            <div class="card-content">
+                                <div class="card-title">南瓜小米粥</div>
+                                <div class="card-info">
+                                    <span>7个月+</span>
+                                    <span>❤️ 302</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-image">胡萝卜泥</div>
+                            <div class="card-content">
+                                <div class="card-title">胡萝卜苹果泥</div>
+                                <div class="card-info">
+                                    <span>6个月+</span>
+                                    <span>❤️ 189</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-title">
+                        适合过敏宝宝 <span class="more-link">查看更多 ></span>
+                    </div>
+                    <div class="card-list">
+                        <div class="card">
+                            <div class="card-image">低敏米糊</div>
+                            <div class="card-content">
+                                <div class="card-title">低敏玉米米糊</div>
+                                <div style="margin: 4px 0">
+                                    <span class="tag">无乳</span>
+                                    <span class="tag">无蛋</span>
+                                </div>
+                                <div class="card-info">
+                                    <span>6个月+</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-image">胡萝卜泥</div>
+                            <div class="card-content">
+                                <div class="card-title">胡萝卜土豆泥</div>
+                                <div style="margin: 4px 0">
+                                    <span class="tag">无麸质</span>
+                                </div>
+                                <div class="card-info">
+                                    <span>7个月+</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-image">燕麦粥</div>
+                            <div class="card-content">
+                                <div class="card-title">无乳燕麦粥</div>
+                                <div style="margin: 4px 0">
+                                    <span class="tag">无乳</span>
+                                    <span class="tag">无蛋</span>
+                                </div>
+                                <div class="card-info">
+                                    <span>9个月+</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-tabbar">
+                    <div class="tab-item active">
+                        <div class="tab-icon">🏠</div>
+                        <div>首页</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">📚</div>
+                        <div>食谱库</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">📆</div>
+                        <div>周计划</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">👤</div>
+                        <div>我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>食谱详情页</h2>
+        <div class="prototype-container">
+            <div class="phone-frame">
+                <div class="phone-header">
+                    <div class="phone-title">食谱详情</div>
+                </div>
+                <div class="phone-content">
+                    <div class="recipe-detail">
+                        <div class="recipe-header">
+                            <div class="recipe-title">南瓜小米粥</div>
+                            <div class="recipe-meta">
+                                <span>适合 7-12 个月宝宝</span>
+                                <span>浏览 5342</span>
+                                <span>收藏 302</span>
+                            </div>
+                        </div>
+
+                        <div class="recipe-image">南瓜小米粥成品图</div>
+
+                        <div class="recipe-section">
+                            <div class="recipe-section-title">食材准备</div>
+                            <ul class="ingredient-list">
+                                <li class="ingredient-item">南瓜：50克</li>
+                                <li class="ingredient-item">小米：20克</li>
+                                <li class="ingredient-item">水：200毫升</li>
+                            </ul>
+                        </div>
+
+                        <div class="allergen-warning">
+                            <strong>过敏提醒：</strong>该食谱不含常见过敏原。如宝宝对南瓜过敏，可用红薯替代。
+                        </div>
+
+                        <div class="recipe-section">
+                            <div class="recipe-section-title">制作步骤</div>
+                            <ol class="step-list">
+                                <li class="step-item">将南瓜去皮、去籽，切成小块。</li>
+                                <li class="step-item">小米淘洗干净，提前浸泡20分钟。</li>
+                                <li class="step-item">将小米、南瓜块和水一起放入锅中，大火煮开。</li>
+                                <li class="step-item">转小火继续煮15分钟，至南瓜和小米都软烂。</li>
+                                <li class="step-item">用搅拌棒将南瓜小米粥搅拌均匀成泥状即可。</li>
+                            </ol>
+                        </div>
+
+                        <div class="recipe-section">
+                            <div class="recipe-section-title">营养价值</div>
+                            <div class="nutrition-grid">
+                                <div class="nutrition-item">
+                                    <div class="nutrition-value">85kcal</div>
+                                    <div class="nutrition-name">热量</div>
+                                </div>
+                                <div class="nutrition-item">
+                                    <div class="nutrition-value">2.6g</div>
+                                    <div class="nutrition-name">蛋白质</div>
+                                </div>
+                                <div class="nutrition-item">
+                                    <div class="nutrition-value">0.5g</div>
+                                    <div class="nutrition-name">脂肪</div>
+                                </div>
+                                <div class="nutrition-item">
+                                    <div class="nutrition-value">18.5g</div>
+                                    <div class="nutrition-name">碳水</div>
+                                </div>
+                                <div class="nutrition-item">
+                                    <div class="nutrition-value">0.8g</div>
+                                    <div class="nutrition-name">膳食纤维</div>
+                                </div>
+                                <div class="nutrition-item">
+                                    <div class="nutrition-value">1.2mg</div>
+                                    <div class="nutrition-name">铁</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recipe-section">
+                            <div class="recipe-section-title">小贴士</div>
+                            <div style="font-size: 14px; line-height: 1.6;">
+                                1. 南瓜富含维生素A和胡萝卜素，有益于宝宝视力发育。<br>
+                                2. 如果宝宝喜欢更浓稠的口感，可以适当减少水量。<br>
+                                3. 该食谱可冷藏保存24小时，食用前重新加热即可。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-bar">
+                        <div class="action-button">
+                            ❤️ 收藏
+                        </div>
+                        <div class="action-button">
+                            📆 添加到计划
+                        </div>
+                        <div class="action-button">
+                            📱 分享
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-tabbar">
+                    <div class="tab-item">
+                        <div class="tab-icon">🏠</div>
+                        <div>首页</div>
+                    </div>
+                    <div class="tab-item active">
+                        <div class="tab-icon">📚</div>
+                        <div>食谱库</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">📆</div>
+                        <div>周计划</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">👤</div>
+                        <div>我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>设置宝宝信息</h2>
+        <div class="prototype-container">
+            <div class="phone-frame">
+                <div class="phone-header">
+                    <div class="phone-title">宝宝信息</div>
+                </div>
+                <div class="phone-content">
+                    <div class="form-group">
+                        <div class="form-label">宝宝昵称</div>
+                        <input type="text" class="form-input" placeholder="请输入宝宝的昵称" value="小皮皮">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label">出生日期</div>
+                        <input type="text" class="form-input" placeholder="请选择出生日期" value="2023-09-15">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label">性别</div>
+                        <select class="form-select">
+                            <option>男宝宝</option>
+                            <option>女宝宝</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label">当前体重(kg)</div>
+                        <input type="text" class="form-input" placeholder="请输入宝宝当前体重" value="8.5">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label">当前身高(cm)</div>
+                        <input type="text" class="form-input" placeholder="请输入宝宝当前身高" value="72">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label">食物过敏原（如有多个可多选）</div>
+                        <div class="chip-container">
+                            <div class="chip">🥚 鸡蛋</div>
+                            <div class="chip selected">🥛 牛奶</div>
+                            <div class="chip">🌾 小麦</div>
+                            <div class="chip">🦐 海鲜</div>
+                            <div class="chip">🥜 花生</div>
+                            <div class="chip">🌰 坚果</div>
+                            <div class="chip">🍯 蜂蜜</div>
+                            <div class="chip selected">🍓 草莓</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label">辅食添加阶段</div>
+                        <select class="form-select">
+                            <option>未开始添加辅食</option>
+                            <option>初期添加辅食(4-6个月)</option>
+                            <option selected>中期添加辅食(7-9个月)</option>
+                            <option>后期添加辅食(10-12个月)</option>
+                            <option>幼儿期(1岁以上)</option>
+                        </select>
+                    </div>
+
+                    <div class="button">保存信息</div>
+                </div>
+                <div class="phone-tabbar">
+                    <div class="tab-item">
+                        <div class="tab-icon">🏠</div>
+                        <div>首页</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">📚</div>
+                        <div>食谱库</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">📆</div>
+                        <div>周计划</div>
+                    </div>
+                    <div class="tab-item active">
+                        <div class="tab-icon">👤</div>
+                        <div>我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>我的页面</h2>
+        <div class="prototype-container">
+            <div class="phone-frame">
+                <div class="phone-header">
+                    <div class="phone-title">我的</div>
+                </div>
+                <div class="phone-content">
+                    <div class="profile-header">
+                        <div class="profile-avatar">👶</div>
+                        <div class="profile-info">
+                            <div class="profile-name">小皮皮妈妈</div>
+                            <div class="profile-meta">宝宝：小皮皮 · 7个月</div>
+                        </div>
+                    </div>
+
+                    <div class="menu-list">
+                        <div class="menu-item">
+                            <div class="menu-title">
+                                <span class="menu-icon">👶</span>
+                                宝宝信息
+                            </div>
+                            <span class="menu-arrow">></span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="menu-title">
+                                <span class="menu-icon">❤️</span>
+                                我的收藏
+                                <span class="badge">12</span>
+                            </div>
+                            <span class="menu-arrow">></span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="menu-title">
+                                <span class="menu-icon">📆</span>
+                                我的膳食计划
+                            </div>
+                            <span class="menu-arrow">></span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="menu-title">
+                                <span class="menu-icon">📋</span>
+                                成长记录
+                            </div>
+                            <span class="menu-arrow">></span>
+                        </div>
+                    </div>
+
+                    <div class="menu-list">
+                        <div class="menu-item">
+                            <div class="menu-title">
+                                <span class="menu-icon">⏰</span>
+                                喂食提醒
+                            </div>
+                            <span class="menu-arrow">></span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="menu-title">
+                                <span class="menu-icon">🔔</span>
+                                消息通知
+                            </div>
+                            <span class="menu-arrow">></span>
+                        </div>
+                    </div>
+
+                    <div class="menu-list">
+                        <div class="menu-item">
+                            <div class="menu-title">
+                                <span class="menu-icon">⚙️</span>
+                                设置
+                            </div>
+                            <span class="menu-arrow">></span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="menu-title">
+                                <span class="menu-icon">❓</span>
+                                帮助与反馈
+                            </div>
+                            <span class="menu-arrow">></span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="menu-title">
+                                <span class="menu-icon">📞</span>
+                                联系我们
+                            </div>
+                            <span class="menu-arrow">></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-tabbar">
+                    <div class="tab-item">
+                        <div class="tab-icon">🏠</div>
+                        <div>首页</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">📚</div>
+                        <div>食谱库</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">📆</div>
+                        <div>周计划</div>
+                    </div>
+                    <div class="tab-item active">
+                        <div class="tab-icon">👤</div>
+                        <div>我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>食谱库</h2>
+        <div class="prototype-container">
+            <div class="phone-frame">
+                <div class="phone-header">
+                    <div class="phone-title">食谱库</div>
+                </div>
+                <div class="phone-content">
+                    <div class="search-bar">
+                        <span class="search-icon">🔍</span>
+                        <span style="color: #999; font-size: 14px;">搜索食谱、食材</span>
+                    </div>
+
+                    <div style="display: flex; overflow-x: auto; gap: 10px; margin-bottom: 15px; padding: 5px 0;">
+                        <div
+                            style="background-color: #ff7b54; color: white; padding: 6px 12px; border-radius: 20px; font-size: 13px; white-space: nowrap;">
+                            全部</div>
+                        <div
+                            style="background-color: #f5f5f5; color: #666; padding: 6px 12px; border-radius: 20px; font-size: 13px; white-space: nowrap;">
+                            适合7个月</div>
+                        <div
+                            style="background-color: #f5f5f5; color: #666; padding: 6px 12px; border-radius: 20px; font-size: 13px; white-space: nowrap;">
+                            无乳制品</div>
+                        <div
+                            style="background-color: #f5f5f5; color: #666; padding: 6px 12px; border-radius: 20px; font-size: 13px; white-space: nowrap;">
+                            无蛋</div>
+                        <div
+                            style="background-color: #f5f5f5; color: #666; padding: 6px 12px; border-radius: 20px; font-size: 13px; white-space: nowrap;">
+                            高铁</div>
+                        <div
+                            style="background-color: #f5f5f5; color: #666; padding: 6px 12px; border-radius: 20px; font-size: 13px; white-space: nowrap;">
+                            高钙</div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <div style="display: flex; gap: 10px;">
+                            <div style="display: flex; align-items: center; font-size: 13px; color: #666;">
+                                <span>分类</span>
+                                <span style="margin-left: 5px;">▼</span>
+                            </div>
+                            <div style="display: flex; align-items: center; font-size: 13px; color: #666;">
+                                <span>月龄</span>
+                                <span style="margin-left: 5px;">▼</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; font-size: 13px; color: #666;">
+                            <span>综合排序</span>
+                            <span style="margin-left: 5px;">▼</span>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+                        <div class="card" style="width: 100%;">
+                            <div class="card-image" style="height: 120px;">南瓜小米粥</div>
+                            <div class="card-content">
+                                <div class="card-title">南瓜小米粥</div>
+                                <div style="margin: 4px 0">
+                                    <span class="tag">7个月+</span>
+                                </div>
+                                <div class="card-info">
+                                    <span>无敏</span>
+                                    <span>❤️ 302</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%;">
+                            <div class="card-image" style="height: 120px;">蔬菜豆腐泥</div>
+                            <div class="card-content">
+                                <div class="card-title">蔬菜豆腐泥</div>
+                                <div style="margin: 4px 0">
+                                    <span class="tag">8个月+</span>
+                                </div>
+                                <div class="card-info">
+                                    <span>无敏</span>
+                                    <span>❤️ 238</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%;">
+                            <div class="card-image" style="height: 120px;">胡萝卜泥</div>
+                            <div class="card-content">
+                                <div class="card-title">胡萝卜苹果泥</div>
+                                <div style="margin: 4px 0">
+                                    <span class="tag">6个月+</span>
+                                </div>
+                                <div class="card-info">
+                                    <span>无敏</span>
+                                    <span>❤️ 189</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%;">
+                            <div class="card-image" style="height: 120px;">低敏米糊</div>
+                            <div class="card-content">
+                                <div class="card-title">低敏玉米米糊</div>
+                                <div style="margin: 4px 0">
+                                    <span class="tag">6个月+</span>
+                                    <span class="tag">无乳</span>
+                                </div>
+                                <div class="card-info">
+                                    <span>无乳无蛋</span>
+                                    <span>❤️ 156</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%;">
+                            <div class="card-image" style="height: 120px;">蒸蛋羹</div>
+                            <div class="card-content">
+                                <div class="card-title">菠菜蒸蛋羹</div>
+                                <div style="margin: 4px 0">
+                                    <span class="tag">9个月+</span>
+                                </div>
+                                <div class="card-info">
+                                    <span>含蛋</span>
+                                    <span>❤️ 247</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%;">
+                            <div class="card-image" style="height: 120px;">土豆泥</div>
+                            <div class="card-content">
+                                <div class="card-title">土豆胡萝卜泥</div>
+                                <div style="margin: 4px 0">
+                                    <span class="tag">7个月+</span>
+                                    <span class="tag">无敏</span>
+                                </div>
+                                <div class="card-info">
+                                    <span>无敏</span>
+                                    <span>❤️ 178</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-tabbar">
+                    <div class="tab-item">
+                        <div class="tab-icon">🏠</div>
+                        <div>首页</div>
+                    </div>
+                    <div class="tab-item active">
+                        <div class="tab-icon">📚</div>
+                        <div>食谱库</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">📆</div>
+                        <div>周计划</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">👤</div>
+                        <div>我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>周计划</h2>
+        <div class="prototype-container">
+            <div class="phone-frame">
+                <div class="phone-header">
+                    <div class="phone-title">周膳食计划</div>
+                </div>
+                <div class="phone-content">
+                    <div class="calendar-header">
+                        <div class="calendar-title">2024年4月</div>
+                        <div class="calendar-nav">
+                            <span>＜</span>
+                            <span>＞</span>
+                        </div>
+                    </div>
+
+                    <div class="day-grid">
+                        <div class="day-cell">
+                            <div class="day-name">日</div>
+                            <div class="day-number">1</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">一</div>
+                            <div class="day-number">2</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">二</div>
+                            <div class="day-number">3</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">三</div>
+                            <div class="day-number">4</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">四</div>
+                            <div class="day-number">5</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">五</div>
+                            <div class="day-number has-meal">6</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">六</div>
+                            <div class="day-number has-meal">7</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">日</div>
+                            <div class="day-number has-meal">8</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">一</div>
+                            <div class="day-number has-meal">9</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">二</div>
+                            <div class="day-number has-meal">10</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">三</div>
+                            <div class="day-number has-meal">11</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">四</div>
+                            <div class="day-number has-meal">12</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">五</div>
+                            <div class="day-number has-meal">13</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">六</div>
+                            <div class="day-number has-meal">14</div>
+                        </div>
+                        <div class="day-cell">
+                            <div class="day-name">日</div>
+                            <div class="day-number today">15</div>
+                        </div>
+                    </div>
+
+                    <div class="meal-plan">
+                        <div class="day-label">今天 (4月15日)</div>
+
+                        <div class="meal-item">
+                            <div class="meal-time">早餐</div>
+                            <div class="meal-content">
+                                南瓜小米粥<br>
+                                <span style="color: #999; font-size: 12px;">富含维生素A和胡萝卜素</span>
+                            </div>
+                        </div>
+
+                        <div class="meal-item">
+                            <div class="meal-time">上午点心</div>
+                            <div class="meal-content">
+                                香蕉泥<br>
+                                <span style="color: #999; font-size: 12px;">有助于肠道健康</span>
+                            </div>
+                        </div>
+
+                        <div class="meal-item">
+                            <div class="meal-time">午餐</div>
+                            <div class="meal-content">
+                                蔬菜豆腐泥 + 胡萝卜汁<br>
+                                <span style="color: #999; font-size: 12px;">蛋白质和维生素A</span>
+                            </div>
+                        </div>
+
+                        <div class="meal-item">
+                            <div class="meal-time">下午点心</div>
+                            <div class="meal-content">
+                                苹果泥<br>
+                                <span style="color: #999; font-size: 12px;">维生素C和膳食纤维</span>
+                            </div>
+                        </div>
+
+                        <div class="meal-item">
+                            <div class="meal-time">晚餐</div>
+                            <div class="meal-content">
+                                土豆胡萝卜泥 + 牛肉泥<br>
+                                <span style="color: #999; font-size: 12px;">铁质和淀粉</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button">
+                        定制新的周膳食计划
+                    </div>
+
+                    <div style="text-align: center; margin-top: 15px; font-size: 13px; color: #666;">
+                        点击日期可查看当天膳食计划
+                    </div>
+                </div>
+                <div class="phone-tabbar">
+                    <div class="tab-item">
+                        <div class="tab-icon">🏠</div>
+                        <div>首页</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">📚</div>
+                        <div>食谱库</div>
+                    </div>
+                    <div class="tab-item active">
+                        <div class="tab-icon">📆</div>
+                        <div>周计划</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">👤</div>
+                        <div>我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>过敏宝宝食谱筛选</h2>
+        <div class="prototype-container">
+            <div class="phone-frame">
+                <div class="phone-header">
+                    <div class="phone-title">过敏宝宝食谱</div>
+                </div>
+                <div class="phone-content">
+                    <div class="search-bar">
+                        <span class="search-icon">🔍</span>
+                        <span style="color: #999; font-size: 14px;">搜索无过敏原食谱</span>
+                    </div>
+
+                    <div style="background-color: #fff3e0; border-radius: 10px; padding: 12px; margin-bottom: 20px;">
+                        <div style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">小皮皮的过敏原</div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <div
+                                style="background-color: #ffcdd2; color: #c62828; padding: 4px 8px; border-radius: 4px; font-size: 13px;">
+                                🥛 牛奶</div>
+                            <div
+                                style="background-color: #ffcdd2; color: #c62828; padding: 4px 8px; border-radius: 4px; font-size: 13px;">
+                                🍓 草莓</div>
+                        </div>
+                    </div>
+
+                    <div class="section-title">
+                        推荐食谱 <span class="more-link">全部 ></span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+                        <div class="card" style="width: 100%;">
+                            <div class="card-image" style="height: 120px;">低敏米糊</div>
+                            <div class="card-content">
+                                <div class="card-title">低敏玉米米糊</div>
+                                <div style="margin: 4px 0">
+                                    <span class="tag">无乳</span>
+                                    <span class="tag">无蛋</span>
+                                </div>
+                                <div class="card-info">
+                                    <span>6个月+</span>
+                                    <span>❤️ 156</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 100%;">
+                            <div class="card-image" style="height: 120px;">胡萝卜泥</div>
+                            <div class="card-content">
+                                <div class="card-title">胡萝卜土豆泥</div>
+                                <div style="margin: 4px 0">
+                                    <span class="tag">无麸质</span>
+                                    <span class="tag">无乳</span>
+                                </div>
+                                <div class="card-info">
+                                    <span>7个月+</span>
+                                    <span>❤️ 128</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-title">
+                        过敏原替代方案
+                    </div>
+
+                    <div style="background-color: white; border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                        <div style="font-weight: bold; margin-bottom: 10px; font-size: 15px;">🥛 牛奶替代品</div>
+                        <ul style="padding-left: 20px; font-size: 14px; line-height: 1.6;">
+                            <li>椰奶 - 质地浓稠，适合制作甜点</li>
+                            <li>杏仁奶 - 富含维生素E和钙</li>
+                            <li>米浆 - 口感温和，适合辅食初期</li>
+                            <li>豆浆 - 蛋白质含量高，7个月后适量使用</li>
+                        </ul>
+                    </div>
+
+                    <div style="background-color: white; border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                        <div style="font-weight: bold; margin-bottom: 10px; font-size: 15px;">🍓 草莓替代品</div>
+                        <ul style="padding-left: 20px; font-size: 14px; line-height: 1.6;">
+                            <li>苹果 - 富含膳食纤维，可制成泥</li>
+                            <li>香蕉 - 钾含量高，消化好</li>
+                            <li>梨 - 多汁易消化，适合6个月+宝宝</li>
+                            <li>蓝莓 - 抗氧化物质丰富，10个月+少量尝试</li>
+                        </ul>
+                    </div>
+
+                    <div class="section-title">
+                        过敏知识
+                    </div>
+
+                    <div style="background-color: white; border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                        <div style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">宝宝食物过敏的常见症状</div>
+                        <div style="font-size: 13px; color: #666; line-height: 1.6;">
+                            皮肤发红、湿疹、腹泻、呕吐、腹痛、哭闹不安等。严重时可能出现呼吸困难、面部肿胀等。如出现严重症状请立即就医。
+                        </div>
+                    </div>
+
+                    <div class="button">
+                        定制无过敏原膳食计划
+                    </div>
+                </div>
+                <div class="phone-tabbar">
+                    <div class="tab-item active">
+                        <div class="tab-icon">🏠</div>
+                        <div>首页</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">📚</div>
+                        <div>食谱库</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">📆</div>
+                        <div>周计划</div>
+                    </div>
+                    <div class="tab-item">
+                        <div class="tab-icon">👤</div>
+                        <div>我的</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
